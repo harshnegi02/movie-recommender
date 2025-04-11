@@ -1,8 +1,15 @@
-
 import streamlit as st
 import pickle
 import pandas as pd
 import requests
+import os
+import gdown
+
+# Automatically download similarity.pkl if it doesn't exist
+if not os.path.exists("similarity.pkl"):
+    file_id = "1ZJWnIG3Lx8wVBRJJSmCmW48F61Cyme68"
+    url = f"https://drive.google.com/uc?id={file_id}"
+    gdown.download(url, "similarity.pkl", quiet=False)
 
 # Load data
 movies = pickle.load(open('movies.pkl', 'rb'))  # This should be a DataFrame with 'title' and 'movie_id'
@@ -30,7 +37,7 @@ def recommend(movie):
     recommended_movies_posters = []
 
     for i in movies_list:
-        movie_id = movies.iloc[i[0]].movie_id  # Use the actual TMDB ID
+        movie_id = movies.iloc[i[0]].movie_id
         recommended_movies.append(movies.iloc[i[0]].title)
         recommended_movies_posters.append(fetch_poster(movie_id))
 
@@ -53,3 +60,4 @@ if st.button('Recommend'):
         with cols[i]:
             st.text(names[i])
             st.image(posters[i])
+
